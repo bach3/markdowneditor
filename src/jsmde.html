@@ -31,15 +31,15 @@
                 toolbar: [
                     {
                         name: "save",
-                        action: function customFunction(editor) {
-                            saveBtn.click();
+                        action: function customSave(editor) {
+                            savingFile();
                         },
                         className: "fa fa-save",
                         title: "Save File Button"
                     },
                     {
                         name: "open",
-                        action: function customFunction(editor) {
+                        action: function customOpen(editor) {
                             readingFile();
                         },
                         className: "fa fa-folder-open",
@@ -68,8 +68,6 @@
                 element: document.getElementById("editor")
             });
 
-            var chooseBtn = document.getElementById("choose");
-
             var inputFile = document.createElement("input");
             inputFile.setAttribute("type", "file");
             inputFile.setAttribute("name", "selectedfile");
@@ -81,12 +79,16 @@
             saveBtn.setAttribute("type", "button");
             saveBtn.setAttribute("name", "saveBtn");
             saveBtn.setAttribute("id", "saveBtn");
-            inputFile.setAttribute("onclick", "handleDownload()");
+            saveBtn.setAttribute("onclick", "handleDownload()");
             saveBtn.setAttribute("style", "visibility:hidden; height:0");
             saveBtn.setAttribute("href", "#");
 
             function readingFile() {
                 inputFile.click();
+            }
+
+            function savingFile(){
+                saveBtn.click();
             }
 
             function setName() {
@@ -138,7 +140,7 @@
                     window.navigator.msSaveBlob(blob, filename);
                     window.navigator.msSaveOrOpenBlob(blob, filename);
                 } else {
-                    saveBtn.href = window.URL.createObjectURL(blob);
+                    saveBtn.setAttribute("href",window.URL.createObjectURL(blob));
                 }
             }
 ////Fulloptions

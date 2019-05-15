@@ -33,7 +33,22 @@
     </div>
    </div>
  <script>
- var simplemde = new SimpleMDE({ element: document.getElementById("editor") });
+ var simplemde = new SimpleMDE({ 
+    //https://github.com/sparksuite/simplemde-markdown-editor/blob/master/src/js/simplemde.js
+    //Line 1069 : var var toolbarBuiltInButtons = {...}
+    // toolbar: [
+    //     {
+	// 		name: "custom",
+	// 		action: function customFunction(editor){
+	// 			// Add your own code
+    //             alert("custome button")
+	// 		},
+	// 		className: "fa fa-star",
+	// 		title: "Custom Button",
+	// 	},
+    // ],
+
+     element: document.getElementById("editor") });
 
  var chooseBtn = document.getElementById("choose");
 

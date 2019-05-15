@@ -8,25 +8,33 @@
  </head>
   <body>
   <h1>Markdown Editor - Javascript version</h1>
-
-  <div>
-      <label>Read File:</label>
-      <button name="choose" id="choose" onclick="readingFile();" type="button">Choose</button>
-      <input type="text" name="readfile" id="readfile" placeholder="Choose a file to read" />
-      <button name="read" id="read" onclick="loadSelectedFile();" type="button">Read</button>
+  <label>Read File:</label>
+  <div class="row">
+    <div class="column column-10">
+            <button name="choose" id="choose" onclick="readingFile();" type="button">Choose</button>
+        </div>
+    <div class="column column-20">
+        <input type="text" name="readfile" id="readfile" placeholder="Choose a file to read" />
+    </div>
+    <div class="column">
+            <button name="read" id="read" onclick="loadSelectedFile();" type="button">Read</button>
+    </div>
   </div>
   <div>
-    <textarea id="editor" name="name" rows="8" cols="40"></textarea>
-    <div>
-     <label>Save file:</label>
-     <input id="filename" type="text" placeholder="input file name" >
+    <textarea id="editor" name="name"></textarea>
+    <label>Save file:</label>
+    <div class="row">
+        <div class="column column-50">
+            <input id="filename" type="text" placeholder="input file name" >
+        </div>
+        <div class="column column-10">
+            <a class="button" id="download" href="#" download="text.md" onclick="handleDownload()">Save</a>
+        </div>
     </div>
-    <a class="button" id="download" href="#" download="text.md" onclick="handleDownload()">Download</a>
    </div>
  <script>
  var simplemde = new SimpleMDE({ element: document.getElementById("editor") });
 
- //choose file
  var chooseBtn = document.getElementById("choose");
 
  var inputFile = document.createElement("input");
@@ -42,8 +50,15 @@
 
  function setName(){
     var readFileName = document.getElementById("readfile");
-    console.log(inputFile);
-    readFileName.setAttribute("value",inputFile.value);
+    var fileFullPath = inputFile.value;
+    if (fileFullPath) {
+        var startIndex = (fileFullPath.indexOf('\\') >= 0 ? fileFullPath.lastIndexOf('\\') : fileFullPath.lastIndexOf('/'));
+        var filename = fileFullPath.substring(startIndex);
+        if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+            filename = filename.substring(1);
+        }
+        readFileName.setAttribute("value",filename);
+    }
  }
 
  function loadSelectedFile(){
@@ -51,18 +66,47 @@
     if (selectedFile){
         const reader = new FileReader();
         reader.onload = function(){
-            var text = reader.result;
-            //var node = document.getElementById('output');
-            //  node.innerText = text;
-            simplemde.value(text);
-            console.log(reader.result.substring(0, 200));
+            var base64result = reader.result;
+            var startIndex = base64result.lastIndexOf(',');
+            var base64Data = base64result.substring(startIndex).replace(',','');
+            var content = convertBase64toData(base64Data)
+            simplemde.value(content);
         };
         reader.readAsDataURL(selectedFile);
     } else {
-        alert("please select a file");
+        alert("Please select a file");
     }    
  }
- ////TEST
+
+ function convertBase64toData(base64Value){
+     var textContent = "";
+     try{
+        textContent = decodeURI(escape(atob(base64Value)));
+     } catch (e){
+        alert("Could not get file content! Please choose a file.");
+     }
+    return textContent;
+ }
+
+ function handleDownload() {
+     var filename = document.getElementById("filename").value + ".md";
+     if (filename == ".md"){
+         alert("Please enter save file name");
+         return 0;
+     }
+     document.getElementById("download").setAttribute("download", filename);
+     
+     var content =simplemde.value();
+     var blob = new Blob([ content ], { "type" : "text/plain" });
+
+     if (window.navigator.msSaveBlob) { 
+         window.navigator.msSaveBlob(blob, filename); 
+         window.navigator.msSaveOrOpenBlob(blob, filename); 
+     } else {
+         document.getElementById("download").href = window.URL.createObjectURL(blob);
+     }
+ }
+////Fulloptions
 //  var simplemde = new SimpleMDE({
 //     autofocus: true,
 //     autosave: {
@@ -129,24 +173,7 @@
 //     toolbar: false,
 //     toolbarTips: false,
 // });
- ////TEST
- 
- function handleDownload() {
-     var filename = document.getElementById("filename").value + ".md";
-     document.getElementById("download").setAttribute("download", filename);
-     
-     var content =simplemde.value();
-     var blob = new Blob([ content ], { "type" : "text/plain" });
-
-     if (window.navigator.msSaveBlob) { 
-         window.navigator.msSaveBlob(blob, "test.txt"); 
-
-         
-         window.navigator.msSaveOrOpenBlob(blob, "test.txt"); 
-     } else {
-         document.getElementById("download").href = window.URL.createObjectURL(blob);
-     }
- }
- </script>
+ ////Fulloptions
+  </script>
  </body>
 </htm>

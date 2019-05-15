@@ -1,5 +1,4 @@
 # Markdowneditor based on Simple MDE and Milligram CSS Framework
-- I just created a customize simple MDE tools bar with [Open File] and [Save File]
- - [Open File]: it can open text file or .md file 
- - [Save File]: as it named
-
+- This a customize simple MDE with a tools-bar which has [Open File] and [Save File] function. Theme is based on Milligram CSS Framework. 
+ - [Open File]: Opens text-file or .md file.
+ - [Save File]: Saves file.

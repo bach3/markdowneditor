@@ -1,126 +1,146 @@
 <htm>
- <head>
-  <title>markdown editor javascript version</title>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="./../libs/milligram/dist/milligram.min.css">
-  <link rel="stylesheet" href="./../libs/sparksuite-simplemde/dist/simplemde.min.css">
-  <script src="./../libs/sparksuite-simplemde/dist/simplemde.min.js"></script>
- </head>
-  <body>
-  <h1>Markdown Editor - Javascript version</h1>
-  <label>Read File:</label>
-  <div class="row">
-    <div class="column column-10">
-            <button name="choose" id="choose" onclick="readingFile();" type="button">Choose</button>
+
+    <head>
+        <title>markdown editor javascript version</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="./../libs/milligram/dist/milligram.min.css">
+        <link rel="stylesheet" href="./../libs/sparksuite-simplemde/dist/simplemde.min.css">
+        <script src="./../libs/sparksuite-simplemde/dist/simplemde.min.js"></script>
+    </head>
+
+    <body>
+        <h1>Markdown Editor - Javascript version</h1>
+        <div>
+            <textarea id="editor" name="name"></textarea>
         </div>
-    <div class="column column-20">
-        <input type="text" name="readfile" id="readfile" placeholder="Choose a file to read" />
-    </div>
-    <div class="column">
-            <button name="read" id="read" onclick="loadSelectedFile();" type="button">Read</button>
-    </div>
-  </div>
-  <div>
-    <textarea id="editor" name="name"></textarea>
-    <label>Save file:</label>
-    <div class="row">
-        <div class="column column-50">
-            <input id="filename" type="text" placeholder="input file name" >
-        </div>
-        <div class="column column-10">
-            <a class="button" id="download" href="#" download="text.md" onclick="handleDownload()">Save</a>
-        </div>
-    </div>
-   </div>
- <script>
- var simplemde = new SimpleMDE({ 
-    //https://github.com/sparksuite/simplemde-markdown-editor/blob/master/src/js/simplemde.js
-    //Line 1069 : var var toolbarBuiltInButtons = {...}
-    // toolbar: [
-    //     {
-	// 		name: "custom",
-	// 		action: function customFunction(editor){
-	// 			// Add your own code
-    //             alert("custome button")
-	// 		},
-	// 		className: "fa fa-star",
-	// 		title: "Custom Button",
-	// 	},
-    // ],
+        <script>
+            var simplemde = new SimpleMDE({
+                //https://github.com/sparksuite/simplemde-markdown-editor/blob/master/src/js/simplemde.js
+                //Line 1069 : var toolbarBuiltInButtons = {...}
+                // toolbar: [
+                //     {
+                // 		name: "custom",
+                // 		action: function customFunction(editor){
+                // 			// Add your own code
+                //             alert("custome button")
+                // 		},
+                // 		className: "fa fa-star",
+                // 		title: "Custom Button",
+                // 	},
+                // ],
+                toolbar: [
+                    {
+                        name: "save",
+                        action: function customFunction(editor) {
+                            saveBtn.click();
+                        },
+                        className: "fa fa-save",
+                        title: "Save File Button"
+                    },
+                    {
+                        name: "open",
+                        action: function customFunction(editor) {
+                            readingFile();
+                        },
+                        className: "fa fa-folder-open",
+                        title: "Open File Button"
+                    },
+                    "|",
+                    "bold",
+                    "italic",
+                    "strikethrough",
+                    "heading",
+                    "|",
+                    "quote",
+                    "unordered-list",
+                    "ordered-list",
+                    "|",
+                    "link",
+                    "image",
+                    "|",
+                    "preview",
+                    "side-by-side",
+                    "fullscreen",
+                    "|",
+                    "guide",
+                ],
+                spellChecker: false,
+                element: document.getElementById("editor")
+            });
 
-     element: document.getElementById("editor") });
+            var chooseBtn = document.getElementById("choose");
 
- var chooseBtn = document.getElementById("choose");
+            var inputFile = document.createElement("input");
+            inputFile.setAttribute("type", "file");
+            inputFile.setAttribute("name", "selectedfile");
+            inputFile.setAttribute("id", "selectedfile");
+            inputFile.setAttribute("onchange", "loadSelectedFile()");
+            inputFile.setAttribute("style", "visibility:hidden; height:0");
 
- var inputFile = document.createElement("input");
-     inputFile.setAttribute("type","file");
-     inputFile.setAttribute("name","selectedfile");
-     inputFile.setAttribute("id","selectedfile");
-     inputFile.setAttribute("onchange","setName()");
-     inputFile.setAttribute("style","visibility:hidden; height:0");
-    
- function readingFile(){
-    inputFile.click();
- }
+            var saveBtn = document.createElement("a");
+            saveBtn.setAttribute("type", "button");
+            saveBtn.setAttribute("name", "saveBtn");
+            saveBtn.setAttribute("id", "saveBtn");
+            inputFile.setAttribute("onclick", "handleDownload()");
+            saveBtn.setAttribute("style", "visibility:hidden; height:0");
+            saveBtn.setAttribute("href", "#");
 
- function setName(){
-    var readFileName = document.getElementById("readfile");
-    var fileFullPath = inputFile.value;
-    if (fileFullPath) {
-        var startIndex = (fileFullPath.indexOf('\\') >= 0 ? fileFullPath.lastIndexOf('\\') : fileFullPath.lastIndexOf('/'));
-        var filename = fileFullPath.substring(startIndex);
-        if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
-            filename = filename.substring(1);
-        }
-        readFileName.setAttribute("value",filename);
-    }
- }
+            function readingFile() {
+                inputFile.click();
+            }
 
- function loadSelectedFile(){
-    const selectedFile = inputFile.files[0];
-    if (selectedFile){
-        const reader = new FileReader();
-        reader.onload = function(){
-            var base64result = reader.result;
-            var startIndex = base64result.lastIndexOf(',');
-            var base64Data = base64result.substring(startIndex).replace(',','');
-            var content = convertBase64toData(base64Data)
-            simplemde.value(content);
-        };
-        reader.readAsDataURL(selectedFile);
-    } else {
-        alert("Please select a file");
-    }    
- }
+            function setName() {
+                var readFileName = document.getElementById("readfile");
+                var fileFullPath = inputFile.value;
+                if (fileFullPath) {
+                    var startIndex = (fileFullPath.indexOf('\\') >= 0 ? fileFullPath.lastIndexOf('\\') : fileFullPath.lastIndexOf('/'));
+                    var filename = fileFullPath.substring(startIndex);
+                    if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+                        filename = filename.substring(1);
+                    }
+                    readFileName.setAttribute("value", filename);
+                }
+            }
 
- function convertBase64toData(base64Value){
-     var textContent = "";
-     try{
-        textContent = decodeURI(escape(atob(base64Value)));
-     } catch (e){
-        alert("Could not get file content! Please choose a file.");
-     }
-    return textContent;
- }
+            function loadSelectedFile() {
+                const selectedFile = inputFile.files[0];
+                if (selectedFile) {
+                    const reader = new FileReader();
+                    reader.onload = function () {
+                        var base64result = reader.result;
+                        var startIndex = base64result.lastIndexOf(',');
+                        var base64Data = base64result.substring(startIndex).replace(',', '');
+                        var content = convertBase64toData(base64Data)
+                        simplemde.value(content);
+                    };
+                    reader.readAsDataURL(selectedFile);
+                }
+            }
 
- function handleDownload() {
-     var filename = document.getElementById("filename").value + ".md";
-     if (filename == ".md"){
-         alert("Please enter save file name");
-         return 0;
-     }
-     document.getElementById("download").setAttribute("download", filename);
-     
-     var content =simplemde.value();
-     var blob = new Blob([ content ], { "type" : "text/plain" });
+            function convertBase64toData(base64Value) {
+                var textContent = "";
+                try {
+                    textContent = decodeURI(escape(atob(base64Value)));
+                } catch (e) {
+                    alert("Could not get file content! Please choose a file.");
+                }
+                return textContent;
+            }
 
-     if (window.navigator.msSaveBlob) { 
-         window.navigator.msSaveBlob(blob, filename); 
-         window.navigator.msSaveOrOpenBlob(blob, filename); 
-     } else {
-         document.getElementById("download").href = window.URL.createObjectURL(blob);
-     }
- }
+            function handleDownload() {
+                var filename = "textfile.md";
+                saveBtn.setAttribute("download", filename);
+
+                var content = simplemde.value();
+                var blob = new Blob([content], { "type": "text/plain" });
+
+                if (window.navigator.msSaveBlob) {
+                    window.navigator.msSaveBlob(blob, filename);
+                    window.navigator.msSaveOrOpenBlob(blob, filename);
+                } else {
+                    saveBtn.href = window.URL.createObjectURL(blob);
+                }
+            }
 ////Fulloptions
 //  var simplemde = new SimpleMDE({
 //     autofocus: true,
@@ -189,6 +209,6 @@
 //     toolbarTips: false,
 // });
  ////Fulloptions
-  </script>
- </body>
+        </script>
+    </body>
 </htm>

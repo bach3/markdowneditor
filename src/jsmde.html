@@ -122,7 +122,7 @@
                 try {
                     textContent = decodeURI(escape(atob(base64Value)));
                 } catch (e) {
-                    alert("Could not get file content! Please choose a file.");
+                    alert("Could not get file content! Please choose a *.md file.");
                 }
                 return textContent;
             }

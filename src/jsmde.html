@@ -122,7 +122,7 @@
             function convertBase64toData(base64Value) {
                 var textContent = "";
                 try {
-                    textContent = decodeURI(escape(atob(base64Value)));
+                    textContent = decodeURIComponent(escape(atob(base64Value)));
                 } catch (e) {
                     alert("Could not get file content! Please choose a *.md file.");
                 }
